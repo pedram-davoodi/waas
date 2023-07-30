@@ -36,11 +36,11 @@ function greenplusWaaS_ConfigOptions()
     ];
 }
 
-function provisioningmodule_CreateAccount(array $params){
 
+function greenplusWaaS_CreateAccount(array $params){
 }
 
-function greenplusWaaSTerminateAccount(array $params)
+function greenplusWaaS_TerminateAccount(array $params)
 {
     try {
 
