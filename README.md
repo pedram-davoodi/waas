@@ -62,7 +62,7 @@ If you encounter any issues or errors while using the Greenplus WaaS module, ple
 If you need further assistance, please contact our support team.
 
 ## License
-
 The Greenplus WaaS WHMCS module is licensed under a proprietary license by GreenPlus. For licensing information, please contact info@Greenwebplus.com.
+
 ---
 _This document was last updated on 2023/7/31._
