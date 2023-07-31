@@ -2,42 +2,196 @@
 
 namespace WHMCS\Module\Server\greenplusWaaS;
 
+use Exception;
+
+/**
+ * Class GreenPlusProvider
+ *
+ * This class provides methods to interact with the GreenPlus WaaS API for managing WordPress installations.
+ *
+ * @package WHMCS\Module\Server\greenplusWaaS
+ */
 class GreenPlusProvider
 {
+    /**
+     * @var string The API token used for authentication with the GreenPlus API.
+     */
     private $apiToken;
+
+    /**
+     * @var string The base URL for the GreenPlus API.
+     */
     private $baseUrl;
 
+    /**
+     * GreenPlusProvider constructor.
+     *
+     * Initializes the GreenPlusProvider object with the API token and base URL retrieved from GPEnv.
+     */
     public function __construct()
     {
-        $this->apiToken = 'uT9qhvzh8um8MvXayImnavCLAibiHZXOLwxmwajAf9c=.gAAAAABkvLwM9YDn2pKetro54vnPQ3GvdoW8c_nc5Vwscws19E8vyIwQ_dJx2TzGsfGviOA6-_5StbcRpZbmrmpLNp8YaxioS_5KyK48OFRty03TT3OzIIZoo6MnqEjGTbN4H1YiK5HgOpCwj4KtOBc0KEYaBnX_h9t-L3NavY9hJhO-yBrBj-U=';
-
-        $this->baseUrl = 'https://portal.greenwebplus.com/api/v1';
+        $this->apiToken = getGPEnv('GreenPlusToken');
+        $this->baseUrl = getGPEnv('GreenPlusURL');
     }
 
+    /**
+     * Retrieves WordPress specifications from the GreenPlus API.
+     *
+     * @return array An associative array containing the API response:
+     *               - 'success' (bool) Whether the request was successful.
+     *               - 'data' (mixed) The decoded data from the API response, containing WordPress specifications.
+     *               If the request was not successful, the response may contain an error message.
+     */
     public function getSpecs()
     {
         try {
-            $apiEndpoint = $this->baseUrl.'/wordpress/specs/';
+            $apiEndpoint = $this->baseUrl . '/wordpress/specs/';
             $apiKey = $this->apiToken;
 
             $ch = curl_init();
             $options = array(
                 CURLOPT_URL => $apiEndpoint,
-                CURLOPT_RETURNTRANSFER => true, // Return the response as a string instead of outputting it directly
+                CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HTTPHEADER => array(
-                    'Authorization: Bearer ' . $apiKey, // Set the Authorization header
+                    'Authorization: Bearer ' . $apiKey,
                 ),
             );
             curl_setopt_array($ch, $options);
             $response = curl_exec($ch);
+            throw_if(empty($response) , new Exception('The provider didn\'t send any response'));
+
             if (curl_errno($ch)) {
                 echo 'cURL error: ' . curl_error($ch);
             }
             curl_close($ch);
-            return json_decode($response)->data;
+            return [
+                'success' => true,
+                'data' => json_decode($response)->data
+            ];
+        } catch (Exception $exception) {
+            return [
+                'success' => false,
+                'message' => $exception->getMessage()
+            ];
+        }
+    }
 
-        }catch (Exception $exception){
-            return [];
+    /**
+     * Creates a new WordPress installation using the GreenPlus API.
+     *
+     * @param string $name The name of the WordPress installation.
+     * @param string $url The URL of the WordPress installation.
+     * @param string $php_version The PHP version for the WordPress installation.
+     * @param string $webserver The web server for the WordPress installation.
+     * @param string $language The language for the WordPress installation.
+     * @param string $wp_user The WordPress admin username.
+     * @param string $wp_password The WordPress admin password.
+     * @param string $wp_email The email address of the WordPress admin.
+     * @param string $plan The plan for the WordPress installation.
+     * @param string $platform The platform for the WordPress installation.
+     *
+     * @return array An associative array containing the API response:
+     *               - 'success' (bool) Whether the request was successful.
+     *               - 'data' (mixed) The decoded data from the API response, containing information about the created WordPress installation.
+     *               If the request was not successful, the response may contain an error message.
+     */
+    public function create($name, $url, $php_version, $webserver, $language, $wp_user, $wp_password, $wp_email, $plan, $platform)
+    {
+        try {
+            $apiEndpoint = $this->baseUrl . '/wordpress';
+
+            $data = array(
+                'name' => $name,
+                'url' => $url,
+                'php_version' => $php_version,
+                'webserver' => $webserver,
+                'language' => $language,
+                'wp_user' => $wp_user,
+                'wp_password' => $wp_password,
+                'wp_email' => $wp_email,
+                'plan' => $plan,
+                'platform' => $platform,
+            );
+            $token = $this->apiToken;
+
+            $ch = curl_init();
+            $options = array(
+                CURLOPT_URL => $apiEndpoint,
+                CURLOPT_POSTFIELDS => $data,
+                CURLOPT_POST => 1,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . $token,
+                ),
+            );
+            curl_setopt_array($ch, $options);
+            $response = curl_exec($ch);
+
+            throw_if(empty($response) , new Exception('The provider didn\'t send any response'));
+            if (curl_errno($ch)) {
+                throw new Exception(curl_error($ch));
+            }
+            return [
+                'success' => true,
+                'data' => json_decode($response)->data
+            ];
+
+        } catch (Exception $exception) {
+            return [
+                'success' => false,
+                'message' => $exception->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Deletes a WordPress installation using the GreenPlus API.
+     *
+     * @param string $uuid The UUID of the WordPress installation to be deleted.
+     *
+     * @return array An associative array containing the API response:
+     *               - 'success' (bool) Whether the request was successful.
+     *               - 'data' (mixed) The decoded data from the API response, containing information about the deleted WordPress installation.
+     *               If the request was not successful, the response may contain an error message.
+     */
+    public function delete($uuid)
+    {
+        try {
+            $apiEndpoint = $this->baseUrl . '/wordpress';
+
+            $data = array(
+                'uuid' => $uuid,
+            );
+            $token = $this->apiToken;
+
+            $ch = curl_init();
+            $options = array(
+                CURLOPT_URL => $apiEndpoint,
+                CURLOPT_POSTFIELDS => $data,
+                CURLOPT_CUSTOMREQUEST => "DELETE",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: Bearer ' . $token,
+                ),
+            );
+            curl_setopt_array($ch, $options);
+            $response = curl_exec($ch);
+
+            if (curl_errno($ch)) {
+                throw new Exception(curl_error($ch));
+            }
+            throw_if(empty($response) , new Exception('The provider didn\'t send any response'));
+
+            return [
+                'success' => true,
+                'data' => json_decode($response)->data
+            ];
+
+        } catch (Exception $exception) {
+            return [
+                'success' => false,
+                'message' => $exception->getMessage()
+            ];
         }
     }
 }

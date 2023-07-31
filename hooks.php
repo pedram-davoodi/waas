@@ -7,10 +7,11 @@ use WHMCS\Module\Server\greenplusWaaS\Models\ProductConfigLinks;
 use WHMCS\Module\Server\greenplusWaaS\Models\ProductConfigOptions;
 use WHMCS\Module\Server\greenplusWaaS\Models\ProductConfigGroups;
 use WHMCS\Module\Server\greenplusWaaS\Models\ProductConfigOptionsSub;
+require_once __DIR__ . '/lib/helper.php';
 
 /*
 |--------------------------------------------------------------------------
-| This hook insert custom fields and configuration options
+| This hook inserts custom fields and configuration options.
 |--------------------------------------------------------------------------
 */
 add_hook('ProductEdit', 1, function ($vars) {
@@ -23,7 +24,7 @@ add_hook('ProductEdit', 1, function ($vars) {
     );
 
     $productConfigGroupOptions = [
-        ['optionname' => 'Php versions', 'gid' => $productConfigGroup->id],
+        ['optionname' => 'PHP versions', 'gid' => $productConfigGroup->id],
         ['optionname' => 'Web server', 'gid' => $productConfigGroup->id],
         ['optionname' => 'Language', 'gid' => $productConfigGroup->id],
     ];
@@ -37,8 +38,8 @@ add_hook('ProductEdit', 1, function ($vars) {
     $ProductConfigGroupOptionsLists = $ProductConfigGroupOptionsLists->pluck('id' , 'optionname');
 
     $productConfigGroupOptionsSubs = [
-        ['configid' => $ProductConfigGroupOptionsLists['Php versions'], 'optionname' => '8.0'],
-        ['configid' => $ProductConfigGroupOptionsLists['Php versions'], 'optionname' => '7.4'],
+        ['configid' => $ProductConfigGroupOptionsLists['PHP versions'], 'optionname' => '8.0'],
+        ['configid' => $ProductConfigGroupOptionsLists['PHP versions'], 'optionname' => '7.4'],
         ['configid' => $ProductConfigGroupOptionsLists['Web server'], 'optionname' => 'Nginx'],
         ['configid' => $ProductConfigGroupOptionsLists['Web server'], 'optionname' => 'Apache'],
         ['configid' => $ProductConfigGroupOptionsLists['Language'], 'optionname' => 'English'],
