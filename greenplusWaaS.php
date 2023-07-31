@@ -33,7 +33,7 @@ function greenplusWaaSMetaData()
 {
     return [
         'DisplayName' => 'Greenplus WaaS',
-        'APIVersion' => '1.1',
+        'APIVersion' => '0.1',
         'RequiresServer' => false,
     ];
 }
@@ -47,6 +47,7 @@ function greenplusWaaSMetaData()
  *                 - 'Type' (string) The type of the configuration option (e.g., "dropdown", "text", etc.).
  *                 - 'Options' (mixed) The available options for the configuration (e.g., dropdown values).
  *                 - 'Description' (string) The description of the configuration option.
+ * @throws Throwable
  */
 function greenplusWaaS_ConfigOptions()
 {
@@ -90,6 +91,7 @@ function greenplusWaaS_ConfigOptions()
  * @param array $params An array containing the module parameters and configuration.
  *
  * @return string The result of the account creation process, either "success" or an error message.
+ * @throws Throwable
  */
 function greenplusWaaS_CreateAccount(array $params)
 {
@@ -136,6 +138,7 @@ function greenplusWaaS_CreateAccount(array $params)
  * @param array $params An array containing the module parameters and configuration.
  *
  * @return string The result of the account termination process, either "success" or an error message.
+ * @throws Throwable
  */
 function greenplusWaaS_TerminateAccount(array $params)
 {

@@ -3,6 +3,7 @@
 namespace WHMCS\Module\Server\greenplusWaaS;
 
 use Exception;
+use Throwable;
 
 /**
  * Class GreenPlusProvider
@@ -27,6 +28,7 @@ class GreenPlusProvider
      * GreenPlusProvider constructor.
      *
      * Initializes the GreenPlusProvider object with the API token and base URL retrieved from GPEnv.
+     * @throws Exception
      */
     public function __construct()
     {
@@ -41,6 +43,7 @@ class GreenPlusProvider
      *               - 'success' (bool) Whether the request was successful.
      *               - 'data' (mixed) The decoded data from the API response, containing WordPress specifications.
      *               If the request was not successful, the response may contain an error message.
+     * @throws Throwable
      */
     public function getSpecs()
     {
@@ -94,6 +97,7 @@ class GreenPlusProvider
      *               - 'success' (bool) Whether the request was successful.
      *               - 'data' (mixed) The decoded data from the API response, containing information about the created WordPress installation.
      *               If the request was not successful, the response may contain an error message.
+     * @throws Throwable
      */
     public function create($name, $url, $php_version, $webserver, $language, $wp_user, $wp_password, $wp_email, $plan, $platform)
     {
@@ -153,6 +157,7 @@ class GreenPlusProvider
      *               - 'success' (bool) Whether the request was successful.
      *               - 'data' (mixed) The decoded data from the API response, containing information about the deleted WordPress installation.
      *               If the request was not successful, the response may contain an error message.
+     * @throws Throwable
      */
     public function delete($uuid)
     {
