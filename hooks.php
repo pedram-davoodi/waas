@@ -44,7 +44,7 @@ add_hook('ProductEdit', 1, function ($vars) {
         ['configid' => $ProductConfigGroupOptionsLists['Web server'], 'optionname' => 'Apache'],
         ['configid' => $ProductConfigGroupOptionsLists['Language'], 'optionname' => 'English'],
         ['configid' => $ProductConfigGroupOptionsLists['Language'], 'optionname' => 'Persian'],
-        ['configid' => $ProductConfigGroupOptionsLists['Language'], 'optionname' => 'Germany'],
+        ['configid' => $ProductConfigGroupOptionsLists['Language'], 'optionname' => 'German'],
         ['configid' => $ProductConfigGroupOptionsLists['Language'], 'optionname' => 'Chinese'],
         ['configid' => $ProductConfigGroupOptionsLists['Language'], 'optionname' => 'Arabic'],
     ];
