@@ -120,11 +120,14 @@ function greenplusWaaS_CreateAccount(array $params)
             throw new Exception($response['message']);
         }
 
-        CustomFieldValue::create([
-            'fieldid' => CustomField::whereType('product')->whereRelid($params['pid'])->whereFieldname('UUID')->first()->id,
-            'relid' => $params['serviceid'],
-            'value' => $response['data']['uuid']
-        ]);
+        CustomFieldValue::updateOrCreate(
+            [
+                'fieldid' => CustomField::whereType('product')->whereRelid($params['pid'])->whereFieldname('UUID')->first()->id,
+                'relid' => $params['serviceid'],
+            ],
+            [
+                'value' => $response['data']['uuid']
+            ]);
 
         return 'success';
     } catch (Exception $exception) {
@@ -147,6 +150,9 @@ function greenplusWaaS_TerminateAccount(array $params)
         if (!$response['success']) {
             throw new Exception($response['message']);
         }
+        $uuidFieldId = CustomField::whereType('product')->whereRelid($params['pid'])->whereFieldname('UUID')->first()->id;
+
+        CustomFieldValue::whereFieldid($uuidFieldId)->whereRelid($params['serviceid'])->delete();
         return 'success';
     } catch (Exception $e) {
         return $e->getMessage();

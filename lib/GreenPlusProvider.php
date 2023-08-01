@@ -121,23 +121,34 @@ class GreenPlusProvider
             $ch = curl_init();
             $options = array(
                 CURLOPT_URL => $apiEndpoint,
-                CURLOPT_POSTFIELDS => $data,
+                CURLOPT_CUSTOMREQUEST => "POST",
                 CURLOPT_POST => 1,
+                CURLOPT_POSTFIELDS => $data,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HTTPHEADER => array(
                     'Authorization: Bearer ' . $token,
                 ),
             );
+
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
             curl_setopt_array($ch, $options);
-            $response = curl_exec($ch);
+            $response = json_decode(curl_exec($ch) , true);
+
 
             throw_if(empty($response) , new Exception('The provider didn\'t send any response'));
+            throw_if(!$response['status'] ,
+                new Exception(
+                    $response['message']
+                    . " : "
+                    . collect($response['errors'])->pluck('detail')->implode(' , ') )
+            );
+
             if (curl_errno($ch)) {
                 throw new Exception(curl_error($ch));
             }
             return [
                 'success' => true,
-                'data' => json_decode($response)->data
+                'data' => $response['data']
             ];
 
         } catch (Exception $exception) {
@@ -162,17 +173,13 @@ class GreenPlusProvider
     public function delete($uuid)
     {
         try {
-            $apiEndpoint = $this->baseUrl . '/wordpress/';
+            $apiEndpoint = $this->baseUrl . '/wordpress/'.$uuid;
 
-            $data = array(
-                'uuid' => $uuid,
-            );
             $token = $this->apiToken;
 
             $ch = curl_init();
             $options = array(
                 CURLOPT_URL => $apiEndpoint,
-                CURLOPT_POSTFIELDS => $data,
                 CURLOPT_CUSTOMREQUEST => "DELETE",
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HTTPHEADER => array(
@@ -180,16 +187,20 @@ class GreenPlusProvider
                 ),
             );
             curl_setopt_array($ch, $options);
-            $response = curl_exec($ch);
+
+            $response = json_decode(curl_exec($ch) , true);
+
 
             if (curl_errno($ch)) {
                 throw new Exception(curl_error($ch));
             }
             throw_if(empty($response) , new Exception('The provider didn\'t send any response'));
+            throw_if(!$response['status'] , new Exception($response['message']));
+
 
             return [
                 'success' => true,
-                'data' => json_decode($response)->data
+                'data' => $response['data']
             ];
 
         } catch (Exception $exception) {
