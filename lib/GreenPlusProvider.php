@@ -102,7 +102,7 @@ class GreenPlusProvider
     public function create($name, $url, $php_version, $webserver, $language, $wp_user, $wp_password, $wp_email, $plan, $platform)
     {
         try {
-            $apiEndpoint = $this->baseUrl . '/wordpress';
+            $apiEndpoint = $this->baseUrl . '/wordpress/';
 
             $data = array(
                 'name' => $name,
@@ -162,7 +162,7 @@ class GreenPlusProvider
     public function delete($uuid)
     {
         try {
-            $apiEndpoint = $this->baseUrl . '/wordpress';
+            $apiEndpoint = $this->baseUrl . '/wordpress/';
 
             $data = array(
                 'uuid' => $uuid,
