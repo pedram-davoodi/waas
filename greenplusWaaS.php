@@ -96,8 +96,9 @@ function greenplusWaaS_ConfigOptions()
 function greenplusWaaS_CreateAccount(array $params)
 {
     try {
-        $pattern = '/\((\d+)\)/';
+        throw_if(!empty($params['customfields']['UUID']) , new Exception('A license is active for this service'));
 
+        $pattern = '/\((\d+)\)/';
         preg_match_all($pattern, $params['configoption1'], $config);
 
         $platform = $config[1][0];
@@ -146,6 +147,8 @@ function greenplusWaaS_CreateAccount(array $params)
 function greenplusWaaS_TerminateAccount(array $params)
 {
     try {
+        throw_if(empty($params['customfields']['UUID']) , new Exception('No active license is found for this service'));
+
         $response = (new GreenPlusProvider())->delete($params['customfields']['UUID']);
         if (!$response['success']) {
             throw new Exception($response['message']);
