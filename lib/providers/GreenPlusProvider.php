@@ -1,6 +1,6 @@
 <?php
 
-namespace WHMCS\Module\Server\greenplusWaaS;
+namespace WHMCS\Module\Server\greenplusWaaS\Providers;
 
 use Exception;
 use Throwable;

@@ -1,6 +1,6 @@
 <?php
 
-use WHMCS\Module\Server\greenplusWaaS\GreenPlusProvider;
+use WHMCS\Module\Server\greenplusWaaS\Providers\GreenPlusProvider;
 use WHMCS\Module\Server\greenplusWaaS\Models\CustomField;
 use WHMCS\Module\Server\greenplusWaaS\Models\CustomFieldValue;
 
