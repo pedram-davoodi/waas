@@ -32,6 +32,7 @@ class GreenPlusProvider
      */
     public function __construct()
     {
+        require_once __DIR__ . '/../helper.php';
         $this->apiToken = getGPEnv('GreenPlusToken');
         $this->baseUrl = getGPEnv('GreenPlusURL');
     }
